@@ -1,0 +1,290 @@
+[gd_scene load_steps=31 format=3 uid="uid://dv83smp8ci3xc"]
+
+[ext_resource type="Script" path="res://Terrain/Terrain.gd" id="1_ampyq"]
+[ext_resource type="Script" path="res://Debug/debug.gd" id="2_c1skh"]
+[ext_resource type="Material" uid="uid://d2uofpdxqmrin" path="res://Textures/pixel_material.tres" id="3_x0x78"]
+[ext_resource type="Texture2D" uid="uid://cnlaott6bgqth" path="res://Textures/transparent.png" id="4_atasm"]
+[ext_resource type="Script" path="res://Environment/Trees.gd" id="5_5cshh"]
+[ext_resource type="PackedScene" path="res://Objects/tree.tscn" id="6_0had2"]
+[ext_resource type="PackedScene" uid="uid://k128qnyts2a6" path="res://Objects/Boat_013.tscn" id="7_uo7jo"]
+[ext_resource type="Shader" path="res://Environment/lowPolyWater.gdshader" id="8_7ptyc"]
+[ext_resource type="PackedScene" uid="uid://ces8ol476x7vw" path="res://Characters/lilguy/lilguy.tscn" id="8_8gru5"]
+[ext_resource type="PackedScene" uid="uid://c7qe676q43ls1" path="res://Cameras/camera_rig.tscn" id="9_nhejn"]
+
+[sub_resource type="Gradient" id="Gradient_wh1qm"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tkg5c"]
+seed = 2
+fractal_octaves = 3
+fractal_lacunarity = 1.2
+fractal_gain = 0.8
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tt7m1"]
+width = 350
+height = 350
+invert = true
+in_3d_space = true
+seamless = true
+as_normal_map = true
+bump_strength = 0.1
+color_ramp = SubResource("Gradient_wh1qm")
+noise = SubResource("FastNoiseLite_tkg5c")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nd05t"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sh42t"]
+in_3d_space = true
+seamless = true
+noise = SubResource("FastNoiseLite_nd05t")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fmv1u"]
+shading_mode = 2
+specular_mode = 1
+disable_ambient_light = true
+albedo_color = Color(0.0431373, 0.360784, 0.0745098, 1)
+albedo_texture = SubResource("NoiseTexture2D_sh42t")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_epekt"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6essd"]
+width = 100
+height = 100
+in_3d_space = true
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_epekt")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_y8p8i"]
+seed = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4gnxr"]
+in_3d_space = true
+seamless = true
+seamless_blend_skirt = 0.2
+noise = SubResource("FastNoiseLite_y8p8i")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vu5u7"]
+next_pass = SubResource("StandardMaterial3D_fmv1u")
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.0588235, 0.537255, 0.101961, 1)
+albedo_texture = SubResource("NoiseTexture2D_tt7m1")
+roughness_texture = SubResource("NoiseTexture2D_6essd")
+heightmap_scale = -0.144
+subsurf_scatter_strength = 0.38
+subsurf_scatter_texture = SubResource("NoiseTexture2D_4gnxr")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_itf6b"]
+seed = 99
+frequency = 0.002
+fractal_lacunarity = 2.1
+fractal_gain = 0.49
+fractal_weighted_strength = 0.56
+domain_warp_enabled = true
+
+[sub_resource type="SystemFont" id="SystemFont_0iyor"]
+font_names = PackedStringArray("Comic Sans MS")
+
+[sub_resource type="LabelSettings" id="LabelSettings_sdcsj"]
+font = SubResource("SystemFont_0iyor")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3f2v3"]
+sky_top_color = Color(0.152941, 0.360784, 0.54902, 1)
+sky_horizon_color = Color(0.662745, 0.615686, 0.670588, 1)
+ground_bottom_color = Color(0.152941, 0.415686, 0.635294, 1)
+ground_horizon_color = Color(0.663087, 0.614357, 0.6708, 1)
+
+[sub_resource type="Sky" id="Sky_ctim5"]
+sky_material = SubResource("ProceduralSkyMaterial_3f2v3")
+
+[sub_resource type="Environment" id="Environment_i2a7v"]
+background_mode = 2
+sky = SubResource("Sky_ctim5")
+ambient_light_color = Color(1, 1, 1, 1)
+reflected_light_source = 2
+tonemap_mode = 2
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.005
+volumetric_fog_emission_energy = 0.7
+volumetric_fog_gi_inject = 0.5
+volumetric_fog_length = 32.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_v0yho"]
+radius = 10.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n25nc"]
+render_priority = 0
+shader = ExtResource("8_7ptyc")
+shader_parameter/out_color = Color(0, 1, 1, 0.99)
+shader_parameter/amount = 0.8
+shader_parameter/beer_factor = 0.3
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_40sss"]
+material = SubResource("ShaderMaterial_n25nc")
+size = Vector2(6000, 6000)
+subdivide_width = 300
+subdivide_depth = 300
+
+[node name="Terrain" type="Node3D" node_paths=PackedStringArray("viewer")]
+script = ExtResource("1_ampyq")
+viewer = NodePath("lilguy")
+material = SubResource("StandardMaterial3D_vu5u7")
+noise = SubResource("FastNoiseLite_itf6b")
+
+[node name="Pixelize" type="Sprite2D" parent="."]
+material = ExtResource("3_x0x78")
+position = Vector2(-74, 47)
+scale = Vector2(1.06636, 0.857729)
+texture = ExtResource("4_atasm")
+offset = Vector2(612, 324)
+
+[node name="debug" type="Label" parent="." node_paths=PackedStringArray("NodeToDebug", "player")]
+visible = false
+offset_left = 32.0
+offset_top = 32.0
+offset_right = 366.0
+offset_bottom = 462.0
+text = "FPS: 0
+Draw Calls:0
+Frame Time:0
+Objects:0"
+script = ExtResource("2_c1skh")
+NodeToDebug = NodePath("..")
+player = NodePath("")
+
+[node name="Panel" type="ColorRect" parent="debug"]
+modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 391.0
+offset_bottom = 367.0
+color = Color(0, 0, 0, 0.905882)
+
+[node name="view_debug" type="CheckBox" parent="debug"]
+layout_mode = 0
+offset_left = -6.0
+offset_top = -33.0
+offset_right = 106.0
+offset_bottom = -2.0
+button_pressed = true
+text = "Show/Hide Debug"
+
+[node name="show_wireframe" type="CheckBox" parent="debug"]
+layout_mode = 0
+offset_left = 172.0
+offset_top = -32.0
+offset_right = 371.0
+offset_bottom = -1.0
+button_pressed = true
+text = "Show/Hide Wireframe"
+
+[node name="Player_speed" type="HSlider" parent="debug"]
+layout_mode = 0
+offset_left = -10.0
+offset_top = 333.0
+offset_right = 366.0
+offset_bottom = 349.0
+min_value = 5.0
+max_value = 1000.0
+value = 5.0
+
+[node name="Label" type="Label" parent="debug"]
+layout_mode = 0
+offset_left = -15.0
+offset_top = 302.0
+offset_right = 79.0
+offset_bottom = 328.0
+text = "Move Speed
+"
+
+[node name="UI" type="CanvasGroup" parent="."]
+
+[node name="Coords" type="Label" parent="UI"]
+offset_left = 20.0
+offset_top = 50.0
+offset_right = 266.0
+offset_bottom = 76.0
+text = "Location: "
+label_settings = SubResource("LabelSettings_sdcsj")
+max_lines_visible = 1
+
+[node name="FlightUI" type="CanvasGroup" parent="."]
+
+[node name="Alt" type="Label" parent="FlightUI"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 266.0
+offset_bottom = 46.0
+text = "Altitude: "
+label_settings = SubResource("LabelSettings_sdcsj")
+max_lines_visible = 1
+
+[node name="Env" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_i2a7v")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Timer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 10.0
+one_shot = true
+autostart = true
+
+[node name="Trees" type="Node3D" parent="."]
+script = ExtResource("5_5cshh")
+
+[node name="tree" parent="Trees" instance=ExtResource("6_0had2")]
+collision_layer = 2
+collision_mask = 3
+
+[node name="Boat_013" parent="." instance=ExtResource("7_uo7jo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1784, 29, 1006)
+
+[node name="lilguy" parent="." node_paths=PackedStringArray("cam", "cam_v", "flightui", "ui") instance=ExtResource("8_8gru5")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1788.32, 29, 1006)
+collision_layer = 4
+collision_mask = 5
+cam = NodePath("H")
+cam_v = NodePath("H/V")
+flightui = NodePath("../FlightUI")
+ui = NodePath("../UI")
+
+[node name="H" parent="lilguy" instance=ExtResource("9_nhejn")]
+transform = Transform3D(1, 0, 6.3573e-08, 0, 1, 0, -6.3573e-08, 0, 1, 0, 0, 6.27466)
+
+[node name="V" parent="lilguy/H" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 5.61888, 0)
+
+[node name="SpringArm3D" parent="lilguy/H/V" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Cam1" parent="lilguy/H/V/SpringArm3D" index="0"]
+transform = Transform3D(1, 2.0174e-07, -5.77777e-08, -5.77776e-08, 0.529372, 0.84839, 2.0174e-07, -0.84839, 0.529372, 0, 0, 0)
+current = false
+
+[node name="los" type="ShapeCast3D" parent="lilguy"]
+visible = false
+shape = SubResource("SphereShape3D_v0yho")
+collision_mask = 4
+collide_with_areas = true
+
+[node name="Water" type="Node3D" parent="."]
+
+[node name="WaterTile" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 0, 500)
+layers = 4
+sorting_offset = -5.0
+mesh = SubResource("PlaneMesh_40sss")
+
+[connection signal="toggled" from="debug/view_debug" to="debug" method="_on_check_box_toggled"]
+[connection signal="toggled" from="debug/show_wireframe" to="debug" method="_on_show_wireframe_toggled"]
+[connection signal="entered_vehicle" from="lilguy" to="Boat_013" method="_on_lilguy_entered_vehicle"]
+[connection signal="exited_vehicle" from="lilguy" to="Boat_013" method="_on_lilguy_exited_vehicle"]
+
+[editable path="lilguy/H"]

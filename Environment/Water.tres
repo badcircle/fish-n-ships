@@ -1,0 +1,31 @@
+[gd_resource type="VisualShader" load_steps=2 format=3 uid="uid://dm8w813fa07iy"]
+
+[sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_fkig3"]
+output_port_for_preview = 0
+constant = Color(0, 0.0185513, 1, 1)
+
+[resource]
+code = "shader_type spatial;
+render_mode diffuse_toon, specular_toon;
+
+
+
+
+void fragment() {
+// ColorConstant:2
+	vec4 n_out2p0 = vec4(0.000000, 0.018551, 1.000000, 1.000000);
+
+
+// Output:0
+	ALBEDO = vec3(n_out2p0.xyz);
+
+
+}
+"
+graph_offset = Vector2(-254.822, 68.4925)
+modes/diffuse = 3
+modes/specular = 1
+nodes/fragment/0/position = Vector2(400, 160)
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorConstant_fkig3")
+nodes/fragment/2/position = Vector2(-460, 140)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0)

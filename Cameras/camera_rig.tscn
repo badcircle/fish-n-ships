@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7qe676q43ls1"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_gvk8g"]
+auto_exposure_enabled = true
+dof_blur_far_enabled = true
+dof_blur_far_distance = 1000.0
+
+[node name="H" type="Node3D"]
+
+[node name="V" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="V"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -18)
+
+[node name="Cam1" type="Camera3D" parent="V/SpringArm3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+attributes = SubResource("CameraAttributesPractical_gvk8g")
+current = true
+near = 0.1
+far = 2000.0
